@@ -25,25 +25,16 @@ public class Jogo {
         
         boolean continua = true;
         int enforcadorAtual = 1;
-        Palavra palavras[];
         
-        while (continua){
-            Palavra palavra = new Palavra();
-            if (enforcadorAtual == 1){
-                palavra.setEnforcador(jogador1);
-                palavra.setEnforcado(jogador2);
-            }
-            else{                
-                palavra.setEnforcado(jogador1);
-                palavra.setEnforcador(jogador2);
-            }
-            
-            palavra.setPalavra(javax.swing.JOptionPane.showInputDialog("Digite a palavra"));
-            if (palavra.getPalavra() == "exit"){
-                continua = false;
+        while (true){
+            String palavra = javax.swing.JOptionPane.showInputDialog("Digite a palavra");
+            if (palavra.equals("exit")){
                 break;
             }
-            palavra.setDica(javax.swing.JOptionPane.showInputDialog("Digite a dica"));
+            if (enforcadorAtual == 1){
+            Jogo jogo = new Jogo(jogador1,jogador2);
+            }
+            
         }
     }
     

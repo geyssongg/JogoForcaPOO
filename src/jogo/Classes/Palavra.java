@@ -10,10 +10,7 @@ package jogo.Classes;
  */
 public class Palavra {
     private String palavra;
-    private Jogador enforcador;
-    private Jogador enforcado;
     private String dica;
-    private String[] cemiterio;
     // Getters e Setters
     public String getPalavra (){
         return this.palavra;
@@ -22,20 +19,7 @@ public class Palavra {
         this.palavra = palavra;
     }
     
-    public Jogador getEnforcador (){
-        return this.enforcador;
-    }
-    public void setEnforcador(Jogador enforcador){
-        this.enforcador = enforcador;
-    }
-    
-    public Jogador getEnforcado (){
-        return this.enforcador;
-    }
-    public void setEnforcado(Jogador enforcado){
-        this.enforcado = enforcado;
-    }
-    
+   
     public String getDica (){
         return this.dica;
     }
