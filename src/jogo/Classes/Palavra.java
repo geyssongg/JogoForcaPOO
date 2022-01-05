@@ -11,6 +11,14 @@ package jogo.Classes;
 public class Palavra {
     private String palavra;
     private String dica;
+    
+    //Construtor
+    public Palavra (String palavra, String dica){
+        this.palavra = palavra;
+        this.dica = dica;
+    }
+    
+    
     // Getters e Setters
     public String getPalavra (){
         return this.palavra;
