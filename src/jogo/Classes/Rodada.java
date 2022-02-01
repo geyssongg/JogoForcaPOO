@@ -88,16 +88,20 @@ public class Rodada {
         
     }
     
-    
+    boolean verificarTentativa(String tentativa){
+        return false;
+    }
     
     //Método que recebe a rodada e gerencia o jogo dela
     public void jogarRodada (Rodada rodada){
-        while (true){
+        boolean condicaoParada = false;
+        while (condicaoParada == false){
             String tentativa = JOptionPane.showInputDialog(gerarMensagem(rodada));
             if (tentativa.length() > 1){
                 JOptionPane.showMessageDialog(null,"Digite apenas uma letra");                
             }
             else {
+                condicaoParada = verificarTentativa(tentativa);
                 
             }
         }
