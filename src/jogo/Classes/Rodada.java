@@ -54,8 +54,8 @@ public class Rodada {
     /*public Rodada (Palavra palavra){
         this.palavra = palavra;
     }*/
-    //Método responsável por gerar as mensagens da forca 
-    private String gerarMensagem (Rodada rodada){
+    
+    private String gerarDesenhoForca(Rodada rodada){
         String msg = "";
         
         switch (chancesUsadas){
@@ -109,11 +109,13 @@ public class Rodada {
                       + "\n|       / \\";
                     break;
         }
-        String impressaoCemiterio = "";
-        for (int i = 0 ; i < cemiterio.length ; i++){
-            impressaoCemiterio += " "+cemiterio[i];
-        }
-        
+        return msg;
+    }
+    
+    
+    //Método responsável por gerar as mensagens da forca 
+    private String gerarMensagem (Rodada rodada){
+        String msg = "";        
         String[] arrayMostraEstado = new String[palavra.getPalavra().length()];
         Arrays.fill(arrayMostraEstado, "_ ");
         String aux = Arrays.toString(letrasAcertadas);
@@ -136,11 +138,24 @@ public class Rodada {
         }   
         
         //Estado da palavra
-        msg += "\n Estado da palavra " + Arrays.toString(arrayMostraEstado);
+        if(Arrays.toString(arrayMostraEstado).contains("_")){
+            
         
-        msg += "\n Letras do cemiterio:" +impressaoCemiterio;
-        return msg;
+            msg += gerarDesenhoForca(rodada);
         
+            String impressaoCemiterio = "";
+            for (int i = 0 ; i < cemiterio.length ; i++){
+                impressaoCemiterio += " "+cemiterio[i];
+            }
+
+            msg += "\n Estado da palavra:" + Arrays.toString(arrayMostraEstado);
+            msg += "\n Letras do cemiterio:" +impressaoCemiterio;
+            
+        }
+        else {
+            msg = "enforcadoGanhou";
+        }
+        return msg;       
     }
     boolean verificaCemiterio (String tentativa){
         for (int i = 0 ; i < cemiterio.length ; i++){
@@ -168,7 +183,13 @@ public class Rodada {
         boolean condicaoParada = false;
         while (condicaoParada == false){
             // Mostrar estado da forca -- mostrar estado da palavra
+            String mensagemForca = gerarMensagem(rodada);
+            if (mensagemForca.equals("enforcadoGanhou")){
+                JOptionPane.showMessageDialog(null,"O enforcado ganhou");
+                return;
+            }
             String tentativa = JOptionPane.showInputDialog(gerarMensagem(rodada));
+            tentativa = tentativa.toLowerCase();
             if (tentativa.length() > 1){
                 JOptionPane.showMessageDialog(null,"Digite apenas uma letra");                
             }

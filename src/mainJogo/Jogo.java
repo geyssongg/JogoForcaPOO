@@ -51,7 +51,8 @@ public class Jogo {
         String palavra = JOptionPane.showInputDialog("Digite a palavra");
         String dica = JOptionPane.showInputDialog("Digite a dica");
         
-        Palavra palavraOBJ  = new Palavra (palavra,dica);
+        
+        Palavra palavraOBJ  = new Palavra (palavra.toLowerCase(),dica);
         Rodada rodada = new Rodada (palavraOBJ);
         rodada.jogarRodada(rodada);
         
