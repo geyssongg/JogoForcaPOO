@@ -4,6 +4,7 @@
  */
 package jogo.Classes;
 
+import java.util.Arrays;
 import javax.swing.JOptionPane;
 
 /**
@@ -11,11 +12,26 @@ import javax.swing.JOptionPane;
  * @author 04399704233
  */
 public class Rodada {
+
+    /**
+     * @return the letrasAcertadas
+     */
+    public String[] getLetrasAcertadas() {
+        return letrasAcertadas;
+    }
+
+    /**
+     * @param letrasAcertadas the letrasAcertadas to set
+     */
+    public void setLetrasAcertadas(String[] letrasAcertadas) {
+        this.letrasAcertadas = letrasAcertadas;
+    }
     
     private Palavra palavra;
     private Jogador enforcador;
     private Jogador enforcado;
     private String[] cemiterio;
+    private String[] letrasAcertadas;
     private int chancesUsadas;
     
     
@@ -24,6 +40,11 @@ public class Rodada {
         this.enforcador = enforcador;*/
         this.chancesUsadas = 0;
         this.palavra = palavra;
+        this.letrasAcertadas = new String[palavra.getPalavra().length()];
+        for (int i = 0 ; i < letrasAcertadas.length ; i++){
+            letrasAcertadas[i] = "0";
+        }
+        
         this.cemiterio = new String[6];
         for (int i = 0 ; i < cemiterio.length ; i++){
             cemiterio[i] = "0";
@@ -92,6 +113,31 @@ public class Rodada {
         for (int i = 0 ; i < cemiterio.length ; i++){
             impressaoCemiterio += " "+cemiterio[i];
         }
+        
+        String[] arrayMostraEstado = new String[palavra.getPalavra().length()];
+        Arrays.fill(arrayMostraEstado, "_ ");
+        String aux = Arrays.toString(letrasAcertadas);
+        
+        
+        String[] palavraToArray = new String[palavra.getPalavra().length()];
+        
+        for (int i = 0 ; i < this.palavra.getPalavra().length();i++){
+            char auxChar = palavra.getPalavra().charAt(i);
+            
+            palavraToArray[i] = auxChar + "";
+        }
+        
+        
+        for (int i = 0 ; i < palavraToArray.length ; i++){
+            
+            if (aux.contains(palavraToArray[i])){
+                arrayMostraEstado[i] = palavraToArray[i];
+            }
+        }   
+        
+        //Estado da palavra
+        msg += "\n Estado da palavra " + Arrays.toString(arrayMostraEstado);
+        
         msg += "\n Letras do cemiterio:" +impressaoCemiterio;
         return msg;
         
@@ -134,6 +180,23 @@ public class Rodada {
                     boolean contemTentativa = contemTentativa(tentativa);
                     if (contemTentativa == true){
                         //código pra colocar a palavra como tentativa correta
+                        boolean letraJaEscrita = false;
+                        for (int i = 0 ; i < this.letrasAcertadas.length ; i++){
+                            if (letrasAcertadas[i].equals(tentativa)){
+                                JOptionPane.showMessageDialog(null,"Você digitou uma letra que já foi inserida");
+                                letraJaEscrita = true;
+                                break;
+                            }
+                        }
+                        if (letraJaEscrita == false){
+                           for (int i = 0 ; i < this.letrasAcertadas.length ; i++){
+                                if (letrasAcertadas[i].equals("0")){
+                                    letrasAcertadas[i] = tentativa;
+                                    break;
+                                }
+                            } 
+                        }
+                        
                     }
                     else {
                         if(chancesUsadas < 6){
@@ -141,7 +204,6 @@ public class Rodada {
                             if(chancesUsadas == 6){
                                 JOptionPane.showMessageDialog(null,"O enforcador ganhou");
                                 break;
-                                //Pode retornar um false ou true 
                             }
                             else{
                                 for (int i = 0 ; i < this.cemiterio.length ; i++){
@@ -213,7 +275,9 @@ public class Rodada {
     public void setCemiterio(String[] cemiterio) {
         this.cemiterio = cemiterio;
     }
-
+    
+    
+    
     /**
      * @return the chancesUsadas
      */
