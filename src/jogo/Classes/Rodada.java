@@ -198,7 +198,7 @@ public class Rodada {
         msg += "O enforcador, " + rodada.getEnforcador().getNome()+",ganhou!"
                 +"\nEstado da forca: \n"+gerarDesenhoForca(rodada)
                 +"\nCemitério de letras: " +impressaoCemiterio()
-                +"Palavra:" +rodada.getPalavra().getPalavra();
+                +"\nPalavra: " +rodada.getPalavra().getPalavra();
         return msg;
     }
     
