@@ -35,19 +35,19 @@ public class Rodada {
     private int chancesUsadas;
     
     
-    public Rodada (Palavra palavra){
-        /*this.enforcado = enforcado;
-        this.enforcador = enforcador;*/
+    public Rodada (Palavra palavra, Jogador enforcador, Jogador enforcado){
+        this.enforcado = enforcado;
+        this.enforcador = enforcador;
         this.chancesUsadas = 0;
         this.palavra = palavra;
         this.letrasAcertadas = new String[palavra.getPalavra().length()];
         for (int i = 0 ; i < letrasAcertadas.length ; i++){
-            letrasAcertadas[i] = "0";
+            letrasAcertadas[i] = " ";
         }
         
         this.cemiterio = new String[6];
         for (int i = 0 ; i < cemiterio.length ; i++){
-            cemiterio[i] = "0";
+            cemiterio[i] = " ";
         }
     }
     
@@ -143,13 +143,10 @@ public class Rodada {
         
             msg += gerarDesenhoForca(rodada);
         
-            String impressaoCemiterio = "";
-            for (int i = 0 ; i < cemiterio.length ; i++){
-                impressaoCemiterio += " "+cemiterio[i];
-            }
-
+            
             msg += "\n Estado da palavra:" + Arrays.toString(arrayMostraEstado);
-            msg += "\n Letras do cemiterio:" +impressaoCemiterio;
+            msg += "\n Letras do cemiterio:" +impressaoCemiterio();
+            msg += "\n Dica: " +rodada.palavra.getDica();
             
         }
         else {
@@ -157,7 +154,16 @@ public class Rodada {
         }
         return msg;       
     }
-    boolean verificaCemiterio (String tentativa){
+    private String impressaoCemiterio (){
+        String cemiterioString = "";
+            for (int i = 0 ; i < cemiterio.length ; i++){
+                cemiterioString += " "+cemiterio[i];
+            }
+        return cemiterioString;
+    }
+    
+    
+    private boolean verificaCemiterio (String tentativa){
         for (int i = 0 ; i < cemiterio.length ; i++){
             if (cemiterio[i].equals(tentativa)){
                 return true;
@@ -166,7 +172,7 @@ public class Rodada {
         return false;        
     }
     
-    boolean contemTentativa(String tentativa){
+    private boolean contemTentativa(String tentativa){
          
         Boolean contem = this.palavra.getPalavra().toLowerCase().contains(tentativa.toLowerCase());
         
@@ -177,6 +183,22 @@ public class Rodada {
             return true;
         }
     }
+    private String gerarMensagemEnforcadoGanhou (Rodada rodada){
+        String msg = "";
+        msg += "O enforcado, "+rodada.getEnforcado().getNome()+", ganhou!" 
+                +"\nEstado da forca:\n"+ gerarDesenhoForca(rodada)
+                +"\nCemitério de letras: " +impressaoCemiterio();
+        return msg;
+    }
+    
+    private String gerarMensagemEnforcadorGanhou(Rodada rodada){
+        String msg = "";
+        msg += "O enforcador, " + rodada.getEnforcador().getNome()+",ganhou!"
+                +"\nEstado da forca: \n"+gerarDesenhoForca(rodada)
+                +"\nCemitério de letras: " +impressaoCemiterio()
+                +"Palavra:" +rodada.getPalavra().getPalavra();
+        return msg;
+    }
     
     //Método que recebe a rodada e gerencia o jogo dela
     public void jogarRodada (Rodada rodada){
@@ -185,7 +207,7 @@ public class Rodada {
             // Mostrar estado da forca -- mostrar estado da palavra
             String mensagemForca = gerarMensagem(rodada);
             if (mensagemForca.equals("enforcadoGanhou")){
-                JOptionPane.showMessageDialog(null,"O enforcado ganhou");
+                JOptionPane.showMessageDialog(null,gerarMensagemEnforcadoGanhou(rodada));
                 return;
             }
             String tentativa = JOptionPane.showInputDialog(gerarMensagem(rodada));
@@ -211,7 +233,7 @@ public class Rodada {
                         }
                         if (letraJaEscrita == false){
                            for (int i = 0 ; i < this.letrasAcertadas.length ; i++){
-                                if (letrasAcertadas[i].equals("0")){
+                                if (letrasAcertadas[i].equals(" ")){
                                     letrasAcertadas[i] = tentativa;
                                     break;
                                 }
@@ -221,14 +243,14 @@ public class Rodada {
                     }
                     else {
                         if(chancesUsadas < 6){
-                            this.chancesUsadas++;
+                            setChancesUsadas();
                             if(chancesUsadas == 6){
-                                JOptionPane.showMessageDialog(null,"O enforcador ganhou");
-                                break;
+                                JOptionPane.showMessageDialog(null,gerarMensagemEnforcadorGanhou(rodada));
+                                return;
                             }
                             else{
                                 for (int i = 0 ; i < this.cemiterio.length ; i++){
-                                    if(cemiterio[i].equals("0") == true){
+                                    if(cemiterio[i].equals(" ") == true){
                                         cemiterio[i] = tentativa;
                                         break;
                                     }
