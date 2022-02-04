@@ -51,10 +51,7 @@ public class Rodada {
         }
     }
     
-    /*public Rodada (Palavra palavra){
-        this.palavra = palavra;
-    }*/
-    
+    //Esse método retorna uma string contendo o desenho atual da forca, usando um switch para os possiveis desenhos da forca
     private String gerarDesenhoForca(Rodada rodada){
         String msg = "";
         
@@ -116,44 +113,46 @@ public class Rodada {
     //Método responsável por gerar as mensagens da forca 
     private String gerarMensagem (Rodada rodada){
         String msg = "";        
+        //Criando uma array para mostrar o estado da palavra
         String[] arrayMostraEstado = new String[palavra.getPalavra().length()];
         Arrays.fill(arrayMostraEstado, "_ ");
+        //Transformando as array de letras acertadas em uma string para que possa ser feito a comparação das tentativas acertadas
+        //Com as letras da palavra
         String aux = Arrays.toString(letrasAcertadas);
         
-        
+        //A variavel palavraToArray é uma array com os chars separados da palavra
         String[] palavraToArray = new String[palavra.getPalavra().length()];
         
+        //Preenchendo a array palavraToArray
         for (int i = 0 ; i < this.palavra.getPalavra().length();i++){
             char auxChar = palavra.getPalavra().charAt(i);
-            
             palavraToArray[i] = auxChar + "";
         }
         
-        
-        for (int i = 0 ; i < palavraToArray.length ; i++){
+        //Percorrendo a palavra e trocando os "_" pelas letras na posição correspondente
+        for (int i = 0 ; i < palavraToArray.length ; i++){      
             
             if (aux.contains(palavraToArray[i])){
                 arrayMostraEstado[i] = palavraToArray[i];
             }
         }   
         
-        //Estado da palavra
+        //Verifica o estado da palavra, caso contenha "_" ainda existem letras para serem adivinhadas
         if(Arrays.toString(arrayMostraEstado).contains("_")){
-            
-        
             msg += gerarDesenhoForca(rodada);
-        
-            
             msg += "\n Estado da palavra:" + Arrays.toString(arrayMostraEstado);
             msg += "\n Letras do cemiterio:" +impressaoCemiterio();
             msg += "\n Dica: " +rodada.palavra.getDica();
             
         }
+        //Caso não exista, retorna a string e que o enforcado ganhou, para que o metodo jogarRodada faça a verificação
         else {
             msg = "enforcadoGanhou";
         }
         return msg;       
     }
+    
+    //Esse método retorna uma string mostrando o estado atual do cemitério
     private String impressaoCemiterio (){
         String cemiterioString = "";
             for (int i = 0 ; i < cemiterio.length ; i++){
@@ -162,7 +161,7 @@ public class Rodada {
         return cemiterioString;
     }
     
-    
+    /*Esse método retorna verdadeiro caso a letra digitada já esteja no cemitério, caso não, retorna falso */
     private boolean verificaCemiterio (String tentativa){
         for (int i = 0 ; i < cemiterio.length ; i++){
             if (cemiterio[i].equals(tentativa)){
@@ -171,11 +170,10 @@ public class Rodada {
         }
         return false;        
     }
+    //Esse método retorna um booleano true caso a tentativa usada esteja na palavra ou false caso a tentativa não esteja contida na palavra
     
     private boolean contemTentativa(String tentativa){
-         
         Boolean contem = this.palavra.getPalavra().toLowerCase().contains(tentativa.toLowerCase());
-        
         if(contem == false){             
             return false;
         }
@@ -183,14 +181,18 @@ public class Rodada {
             return true;
         }
     }
+    
+    //Esse método é chamado quando o enforcado ganha, gerando a mensagem e a retornando em uma String
     private String gerarMensagemEnforcadoGanhou (Rodada rodada){
         String msg = "";
         msg += "O enforcado, "+rodada.getEnforcado().getNome()+", ganhou!" 
                 +"\nEstado da forca:\n"+ gerarDesenhoForca(rodada)
-                +"\nCemitério de letras: " +impressaoCemiterio();
+                +"\nCemitério de letras: " +impressaoCemiterio()                
+                +"Palavra:" +rodada.getPalavra().getPalavra();
         return msg;
     }
     
+    //Esse método é chamado quando o enforcador ganha, gerando a mensagem e a retornando em uma String
     private String gerarMensagemEnforcadorGanhou(Rodada rodada){
         String msg = "";
         msg += "O enforcador, " + rodada.getEnforcador().getNome()+",ganhou!"
@@ -202,27 +204,43 @@ public class Rodada {
     
     //Método que recebe a rodada e gerencia o jogo dela
     public void jogarRodada (Rodada rodada){
-        boolean condicaoParada = false;
-        while (condicaoParada == false){
+        
+        //Loop que persiste até que um dos jogadores ganhe
+        while (true){
+            
             // Mostrar estado da forca -- mostrar estado da palavra
             String mensagemForca = gerarMensagem(rodada);
+            
+            //Condição para caso a mensagem retornada seja a do enforcado ter ganhado
             if (mensagemForca.equals("enforcadoGanhou")){
                 JOptionPane.showMessageDialog(null,gerarMensagemEnforcadoGanhou(rodada));
                 return;
             }
+            
+            //Geração da mensagem que será apresentada na tentativa
             String tentativa = JOptionPane.showInputDialog(gerarMensagem(rodada));
             tentativa = tentativa.toLowerCase();
+            
+            //Verificação de quantas letras o usuário inseriu na tentativa, caso seja mais que uma
             if (tentativa.length() > 1){
                 JOptionPane.showMessageDialog(null,"Digite apenas uma letra");                
             }
+            
+            //Caso a tentativa seja valida
             else {
+                //Chama a função verificaCemiterio para verificar se a letra já foi inserida
                 if (verificaCemiterio(tentativa)){
                     JOptionPane.showMessageDialog(null,"Você digitou uma letra que já foi inserida");
                 }
+                
+                //Caso a tentativa não esteja no cemitério é feito a verificação de certa ou errada
                 else {                    
+                    //Chamada da função contemTentativa, para verificar se a tentativa está contida na palavra
                     boolean contemTentativa = contemTentativa(tentativa);
+                    //Caso a tentativa esteja na palavra
                     if (contemTentativa == true){
-                        //código pra colocar a palavra como tentativa correta
+                        //Verifica se a letra já não foi escrita na palavra, caso já tenha sido escrita muda o booleano
+                        // letraJaEscrita para verdadeiro
                         boolean letraJaEscrita = false;
                         for (int i = 0 ; i < this.letrasAcertadas.length ; i++){
                             if (letrasAcertadas[i].equals(tentativa)){
@@ -231,6 +249,8 @@ public class Rodada {
                                 break;
                             }
                         }
+                        //Caso o booleano não seja mudado para verdadeiro, a tentativa está na palavra 
+                        //Então é feito a lógica para colocar a letra na array de letras acertadas
                         if (letraJaEscrita == false){
                            for (int i = 0 ; i < this.letrasAcertadas.length ; i++){
                                 if (letrasAcertadas[i].equals(" ")){
@@ -241,13 +261,19 @@ public class Rodada {
                         }
                         
                     }
+                    //Caso a palavra não contenha a tentativa, é feito o acrescimo da tentativa no cemitério
+                    //E somado a variavel chancesUsadas +1
                     else {
+                        //Verificando se o usuário ainda tem tentativas
                         if(chancesUsadas < 6){
                             setChancesUsadas();
+                            //Caso ele já tenha usado as 5 e erre mais uma, ele ira para 6 tentivas erradas
+                            //O que finaliza o jogo, dando vitória ao enforcador
                             if(chancesUsadas == 6){
                                 JOptionPane.showMessageDialog(null,gerarMensagemEnforcadorGanhou(rodada));
                                 return;
                             }
+                            //Caso ainda lhe reste tentativas é feito o acrescimo da variavel chancesUsadas
                             else{
                                 for (int i = 0 ; i < this.cemiterio.length ; i++){
                                     if(cemiterio[i].equals(" ") == true){
